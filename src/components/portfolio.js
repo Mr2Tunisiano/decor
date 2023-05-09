@@ -3,10 +3,17 @@ import Isotope from "isotope-layout";
 import GLightbox from "glightbox";
 import { useEffect } from "react";
 import Modal from "./modal";
+import { useDispatch, useSelector } from "react-redux";
+import { fetchProjects } from "../rtk/slices/projectSlice";
 
 function Portfolio() {
+  const dispatch = useDispatch();
+  const projects = useSelector((state) => state.projects);
+  useEffect(() => {
+    dispatch(fetchProjects());
+  }, [dispatch]);
   // eslint-disable-next-line no-unused-vars
-  const glightbox = GLightbox({
+  const glightbox = new GLightbox({
     selector: ".glightbox",
   });
   useEffect(() => {
@@ -63,10 +70,6 @@ function Portfolio() {
         });
       });
     }
-
-    /**
-     * Animation on scroll function and init
-     */
     function aos_init() {
       AOS.init({
         duration: 800,
@@ -78,7 +81,7 @@ function Portfolio() {
     window.addEventListener("load", () => {
       aos_init();
     });
-  });
+  }, []);
   return (
     <section id="portfolio" className="portfolio anchor">
       <div className="container" data-aos="fade-up">
@@ -99,10 +102,14 @@ function Portfolio() {
             <li data-filter="*" className="filter-active">
               All
             </li>
-            <li data-filter=".filter-app">App</li>
-            <li data-filter=".filter-product">Product</li>
-            <li data-filter=".filter-branding">Branding</li>
-            <li data-filter=".filter-books">Books</li>
+            <li data-filter=".filter-bedroom">Bedroom</li>
+            <li data-filter=".filter-living">Living Room</li>
+            <li data-filter=".filter-bath">Bathroom</li>
+            <li data-filter=".filter-restaurant">Restaurant</li>
+            <li data-filter=".filter-kitchen">Kitchen</li>
+            <li data-filter=".filter-admin">Administration</li>
+            <li data-filter=".filter-glass">Glass Wall Seperation</li>
+            <li data-filter=".filter-house">Full House</li>
           </ul>
 
           <div
@@ -110,336 +117,302 @@ function Portfolio() {
             data-aos="fade-up"
             data-aos-delay="300"
           >
-            <div className="col-lg-4 col-md-6 portfolio-item filter-app">
-              <img
-                src="assets/img/portfolio/app-1.jpg"
-                className="img-fluid"
-                alt=""
-              />
-              <div className="portfolio-info">
-                <h4>App 1</h4>
-                <p>Lorem ipsum, dolor sit amet consectetur</p>
-                <a
-                  href="assets/img/portfolio/app-1.jpg"
-                  title="App 1"
-                  data-gallery="portfolio-gallery-app"
-                  className="glightbox preview-link"
-                >
-                  <i className="bi bi-zoom-in"></i>
-                </a>
-                <a
-                  data-bs-toggle="modal"
-                  data-bs-target="#exampleModal"
-                  href="portfolio-details.html"
-                  title="More Details"
-                  className="details-link"
-                >
-                  <i className="bi bi-link-45deg"></i>
-                </a>
-              </div>
-            </div>
+            {
+              // eslint-disable-next-line
+              projects.map((project) => {
+                const imgArray = project.img.split(",");
+                switch (project.category) {
+                  case "Bedroom":
+                    return (
+                      <div
+                        key={project.id}
+                        className="col-lg-4 col-md-6 portfolio-item filter-bedroom"
+                      >
+                        <img
+                          src={require(`../../public/assets/img/Projects/${imgArray[0]}`)}
+                          className="img-fluid"
+                          alt=""
+                        />
+                        <div className="portfolio-info">
+                          <h4>{project.name}</h4>
+                          <p>{project.client}</p>
+                          <a
+                            href={require(`../../public/assets/img/Projects/${imgArray[0]}`)}
+                            title={project.name}
+                            data-gallery="portfolio-gallery-product"
+                            className="glightbox preview-link"
+                          >
+                            <i className="bi bi-zoom-in"></i>
+                          </a>
+                          <button
+                            title="More Details"
+                            className="details-link"
+                            data-bs-toggle="modal"
+                            data-bs-target={`#project${project.id}`}
+                          >
+                            <i className="bi bi-link-45deg"></i>
+                          </button>
+                        </div>
+                      </div>
+                    );
 
-            <div className="col-lg-4 col-md-6 portfolio-item filter-product">
-              <img
-                src="assets/img/portfolio/product-1.jpg"
-                className="img-fluid"
-                alt=""
-              />
-              <div className="portfolio-info">
-                <h4>Product 1</h4>
-                <p>Lorem ipsum, dolor sit amet consectetur</p>
-                <a
-                  href="assets/img/portfolio/product-1.jpg"
-                  title="Product 1"
-                  data-gallery="portfolio-gallery-product"
-                  className="glightbox preview-link"
-                >
-                  <i className="bi bi-zoom-in"></i>
-                </a>
-                <a
-                  href="portfolio-details.html"
-                  title="More Details"
-                  className="details-link"
-                >
-                  <i className="bi bi-link-45deg"></i>
-                </a>
-              </div>
-            </div>
+                  case "Living Room":
+                    return (
+                      <>
+                        <div
+                          key={project.id}
+                          className="col-lg-4 col-md-6 portfolio-item filter-living"
+                        >
+                          <img
+                            src={require(`../../public/assets/img/Projects/${imgArray[0]}`)}
+                            className="img-fluid"
+                            alt=""
+                          />
+                          <div className="portfolio-info">
+                            <h4>{project.name}</h4>
+                            <p>{project.client}</p>
+                            <a
+                              href={require(`../../public/assets/img/Projects/${imgArray[0]}`)}
+                              title={project.name}
+                              data-gallery="portfolio-gallery-product"
+                              className="glightbox preview-link"
+                            >
+                              <i className="bi bi-zoom-in"></i>
+                            </a>
+                            {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+                            <a
+                              title="More Details"
+                              className="details-link"
+                              data-bs-toggle="modal"
+                              data-bs-target={`#project${project.id}`}
+                            >
+                              <i className="bi bi-link-45deg"></i>
+                            </a>
+                          </div>
+                        </div>
+                      </>
+                    );
 
-            <div className="col-lg-4 col-md-6 portfolio-item filter-branding">
-              <img
-                src="assets/img/portfolio/branding-1.jpg"
-                className="img-fluid"
-                alt=""
-              />
-              <div className="portfolio-info">
-                <h4>Branding 1</h4>
-                <p>Lorem ipsum, dolor sit amet consectetur</p>
-                <a
-                  href="assets/img/portfolio/branding-1.jpg"
-                  title="Branding 1"
-                  data-gallery="portfolio-gallery-branding"
-                  className="glightbox preview-link"
-                >
-                  <i className="bi bi-zoom-in"></i>
-                </a>
-                <a
-                  href="portfolio-details.html"
-                  title="More Details"
-                  className="details-link"
-                >
-                  <i className="bi bi-link-45deg"></i>
-                </a>
-              </div>
-            </div>
+                  case "Bathroom":
+                    return (
+                      <div
+                        key={project.id}
+                        className="col-lg-4 col-md-6 portfolio-item filter-bath"
+                      >
+                        <img
+                          src={require(`../../public/assets/img/Projects/${imgArray[0]}`)}
+                          className="img-fluid"
+                          alt=""
+                        />
+                        <div className="portfolio-info">
+                          <h4>{project.name}</h4>
+                          <p>{project.client}</p>
+                          <a
+                            href={require(`../../public/assets/img/Projects/${imgArray[0]}`)}
+                            title={project.name}
+                            data-gallery="portfolio-gallery-product"
+                            className="glightbox preview-link"
+                          >
+                            <i className="bi bi-zoom-in"></i>
+                          </a>
+                          {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+                          <a
+                            title="More Details"
+                            className="details-link"
+                            data-bs-toggle="modal"
+                            data-bs-target={`#project${project.id}`}
+                          >
+                            <i className="bi bi-link-45deg"></i>
+                          </a>
+                        </div>
+                      </div>
+                    );
 
-            <div className="col-lg-4 col-md-6 portfolio-item filter-books">
-              <img
-                src="assets/img/portfolio/books-1.jpg"
-                className="img-fluid"
-                alt=""
-              />
-              <div className="portfolio-info">
-                <h4>Books 1</h4>
-                <p>Lorem ipsum, dolor sit amet consectetur</p>
-                <a
-                  href="assets/img/portfolio/books-1.jpg"
-                  title="Branding 1"
-                  data-gallery="portfolio-gallery-book"
-                  className="glightbox preview-link"
-                >
-                  <i className="bi bi-zoom-in"></i>
-                </a>
-                <a
-                  href="portfolio-details.html"
-                  title="More Details"
-                  className="details-link"
-                >
-                  <i className="bi bi-link-45deg"></i>
-                </a>
-              </div>
-            </div>
+                  case "Restaurant":
+                    return (
+                      <div
+                        key={project.id}
+                        className="col-lg-4 col-md-6 portfolio-item filter-restaurant"
+                      >
+                        <img
+                          src={require(`../../public/assets/img/Projects/${imgArray[0]}`)}
+                          className="img-fluid"
+                          alt=""
+                        />
+                        <div className="portfolio-info">
+                          <h4>{project.name}</h4>
+                          <p>{project.client}</p>
+                          <a
+                            href={require(`../../public/assets/img/Projects/${imgArray[0]}`)}
+                            title={project.name}
+                            data-gallery="portfolio-gallery-product"
+                            className="glightbox preview-link"
+                          >
+                            <i className="bi bi-zoom-in"></i>
+                          </a>
+                          {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+                          <a
+                            title="More Details"
+                            className="details-link"
+                            data-bs-toggle="modal"
+                            data-bs-target={`#project${project.id}`}
+                          >
+                            <i className="bi bi-link-45deg"></i>
+                          </a>
+                        </div>
+                      </div>
+                    );
 
-            <div className="col-lg-4 col-md-6 portfolio-item filter-app">
-              <img
-                src="assets/img/portfolio/app-2.jpg"
-                className="img-fluid"
-                alt=""
-              />
-              <div className="portfolio-info">
-                <h4>App 2</h4>
-                <p>Lorem ipsum, dolor sit amet consectetur</p>
-                <a
-                  href="assets/img/portfolio/app-2.jpg"
-                  title="App 2"
-                  data-gallery="portfolio-gallery-app"
-                  className="glightbox preview-link"
-                >
-                  <i className="bi bi-zoom-in"></i>
-                </a>
-                ssName
-                <a
-                  href="portfolio-details.html"
-                  title="More Details"
-                  className="details-link"
-                >
-                  <i className="bi bi-link-45deg"></i>
-                </a>
-              </div>
-            </div>
+                  case "Kitchen":
+                    return (
+                      <div
+                        key={project.id}
+                        className="col-lg-4 col-md-6 portfolio-item filter-kitchen"
+                      >
+                        <img
+                          src={require(`../../public/assets/img/Projects/${imgArray[0]}`)}
+                          className="img-fluid"
+                          alt=""
+                        />
+                        <div className="portfolio-info">
+                          <h4>{project.name}</h4>
+                          <p>{project.client}</p>
+                          <a
+                            href={require(`../../public/assets/img/Projects/${imgArray[0]}`)}
+                            title={project.name}
+                            data-gallery="portfolio-gallery-product"
+                            className="glightbox preview-link"
+                          >
+                            <i className="bi bi-zoom-in"></i>
+                          </a>
+                          {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+                          <a
+                            title="More Details"
+                            className="details-link"
+                            data-bs-toggle="modal"
+                            data-bs-target={`#project${project.id}`}
+                          >
+                            <i className="bi bi-link-45deg"></i>
+                          </a>
+                        </div>
+                      </div>
+                    );
 
-            <div className="col-lg-4 col-md-6 portfolio-item filter-product">
-              <img
-                src="assets/img/portfolio/product-2.jpg"
-                className="img-fluid"
-                alt=""
-              />
-              <div className="portfolio-info">
-                <h4>Product 2</h4>
-                <p>Lorem ipsum, dolor sit amet consectetur</p>
-                <a
-                  href="assets/img/portfolio/product-2.jpg"
-                  title="Product 2"
-                  data-gallery="portfolio-gallery-product"
-                  className="glightbox preview-link"
-                >
-                  <i className="bi bi-zoom-in"></i>
-                </a>
-                <a
-                  href="portfolio-details.html"
-                  title="More Details"
-                  className="details-link"
-                >
-                  <i className="bi bi-link-45deg"></i>
-                </a>
-              </div>
-            </div>
+                  case "Administration":
+                    return (
+                      <div
+                        key={project.id}
+                        className="col-lg-4 col-md-6 portfolio-item filter-admin"
+                      >
+                        <img
+                          src={require(`../../public/assets/img/Projects/${imgArray[0]}`)}
+                          className="img-fluid"
+                          alt=""
+                        />
+                        <div className="portfolio-info">
+                          <h4>{project.name}</h4>
+                          <p>{project.client}</p>
+                          <a
+                            href={require(`../../public/assets/img/Projects/${imgArray[0]}`)}
+                            title={project.name}
+                            data-gallery="portfolio-gallery-product"
+                            className="glightbox preview-link"
+                          >
+                            <i className="bi bi-zoom-in"></i>
+                          </a>
+                          {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+                          <a
+                            title="More Details"
+                            className="details-link"
+                            data-bs-toggle="modal"
+                            data-bs-target={`#project${project.id}`}
+                          >
+                            <i className="bi bi-link-45deg"></i>
+                          </a>
+                        </div>
+                      </div>
+                    );
 
-            <div className="col-lg-4 col-md-6 portfolio-item filter-branding">
-              <img
-                src="assets/img/portfolio/branding-2.jpg"
-                className="img-fluid"
-                alt=""
-              />
-              <div className="portfolio-info">
-                <h4>Branding 2</h4>
-                <p>Lorem ipsum, dolor sit amet consectetur</p>
-                <a
-                  href="assets/img/portfolio/branding-2.jpg"
-                  title="Branding 2"
-                  data-gallery="portfolio-gallery-branding"
-                  className="glightbox preview-link"
-                >
-                  <i className="bi bi-zoom-in"></i>
-                </a>
-                <a
-                  href="portfolio-details.html"
-                  title="More Details"
-                  className="details-link"
-                >
-                  <i className="bi bi-link-45deg"></i>
-                </a>
-              </div>
-            </div>
+                  case "Glass Wall Seperation":
+                    return (
+                      <div
+                        key={project.id}
+                        className="col-lg-4 col-md-6 portfolio-item filter-glass"
+                      >
+                        <img
+                          src={require(`../../public/assets/img/Projects/${imgArray[0]}`)}
+                          className="img-fluid"
+                          alt=""
+                        />
+                        <div className="portfolio-info">
+                          <h4>{project.name}</h4>
+                          <p>{project.client}</p>
+                          <a
+                            href={require(`../../public/assets/img/Projects/${imgArray[0]}`)}
+                            title={project.name}
+                            data-gallery="portfolio-gallery-product"
+                            className="glightbox preview-link"
+                          >
+                            <i className="bi bi-zoom-in"></i>
+                          </a>
+                          {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+                          <a
+                            title="More Details"
+                            className="details-link"
+                            data-bs-toggle="modal"
+                            data-bs-target={`#project${project.id}`}
+                          >
+                            <i className="bi bi-link-45deg"></i>
+                          </a>
+                        </div>
+                      </div>
+                    );
 
-            <div className="col-lg-4 col-md-6 portfolio-item filter-books">
-              <img
-                src="assets/img/portfolio/books-2.jpg"
-                className="img-fluid"
-                alt=""
-              />
-              <div className="portfolio-info">
-                <h4>Books 2</h4>
-                <p>Lorem ipsum, dolor sit amet consectetur</p>
-                <a
-                  href="assets/img/portfolio/books-2.jpg"
-                  title="Branding 2"
-                  data-gallery="portfolio-gallery-book"
-                  className="glightbox preview-link"
-                >
-                  <i className="bi bi-zoom-in"></i>
-                </a>
-                <a
-                  href="portfolio-details.html"
-                  title="More Details"
-                  className="details-link"
-                >
-                  <i className="bi bi-link-45deg"></i>
-                </a>
-              </div>
-            </div>
-
-            <div className="col-lg-4 col-md-6 portfolio-item filter-app">
-              <img
-                src="assets/img/portfolio/app-3.jpg"
-                className="img-fluid"
-                alt=""
-              />
-              <div className="portfolio-info">
-                <h4>App 3</h4>
-                <p>Lorem ipsum, dolor sit amet consectetur</p>
-                <a
-                  href="assets/img/portfolio/app-3.jpg"
-                  title="App 3"
-                  data-gallery="portfolio-gallery-app"
-                  className="glightbox preview-link"
-                >
-                  <i className="bi bi-zoom-in"></i>
-                </a>
-                <a
-                  href="portfolio-details.html"
-                  title="More Details"
-                  className="details-link"
-                >
-                  <i className="bi bi-link-45deg"></i>
-                </a>
-              </div>
-            </div>
-
-            <div className="col-lg-4 col-md-6 portfolio-item filter-product">
-              <img
-                src="assets/img/portfolio/product-3.jpg"
-                className="img-fluid"
-                alt=""
-              />
-              <div className="portfolio-info">
-                <h4>Product 3</h4>
-                <p>Lorem ipsum, dolor sit amet consectetur</p>
-                <a
-                  href="assets/img/portfolio/product-3.jpg"
-                  title="Product 3"
-                  data-gallery="portfolio-gallery-product"
-                  className="glightbox preview-link"
-                >
-                  <i className="bi bi-zoom-in"></i>
-                </a>
-                <a
-                  href="portfolio-details.html"
-                  title="More Details"
-                  className="details-link"
-                >
-                  <i className="bi bi-link-45deg"></i>
-                </a>
-              </div>
-            </div>
-
-            <div className="col-lg-4 col-md-6 portfolio-item filter-branding">
-              <img
-                src="assets/img/portfolio/branding-3.jpg"
-                className="img-fluid"
-                alt=""
-              />
-              <div className="portfolio-info">
-                <h4>Branding 3</h4>
-                <p>Lorem ipsum, dolor sit amet consectetur</p>
-                <a
-                  href="assets/img/portfolio/branding-3.jpg"
-                  title="Branding 2"
-                  data-gallery="portfolio-gallery-branding"
-                  className="glightbox preview-link"
-                >
-                  <i className="bi bi-zoom-in"></i>
-                </a>
-                <a
-                  href="portfolio-details.html"
-                  title="More Details"
-                  className="details-link"
-                >
-                  <i className="bi bi-link-45deg"></i>
-                </a>
-              </div>
-            </div>
-
-            <div className="col-lg-4 col-md-6 portfolio-item filter-books">
-              <img
-                src="assets/img/portfolio/books-3.jpg"
-                className="img-fluid"
-                alt=""
-              />
-              <div className="portfolio-info">
-                <h4>Books 3</h4>
-                <p>Lorem ipsum, dolor sit amet consectetur</p>
-                <a
-                  href="assets/img/portfolio/books-3.jpg"
-                  title="Branding 3"
-                  data-gallery="portfolio-gallery-book"
-                  className="glightbox preview-link"
-                >
-                  <i className="bi bi-zoom-in"></i>
-                </a>
-                <a
-                  href="portfolio-details.html"
-                  title="More Details"
-                  className="details-link"
-                >
-                  <i className="bi bi-link-45deg"></i>
-                </a>
-              </div>
-            </div>
+                  case "Full House":
+                    return (
+                      <div
+                        key={project.id}
+                        className="col-lg-4 col-md-6 portfolio-item filter-house"
+                      >
+                        <img
+                          src={require(`../../public/assets/img/Projects/${imgArray[0]}`)}
+                          className="img-fluid"
+                          alt=""
+                        />
+                        <div className="portfolio-info">
+                          <h4>{project.name}</h4>
+                          <p>{project.client}</p>
+                          <a
+                            href={require(`../../public/assets/img/Projects/${imgArray[0]}`)}
+                            title={project.name}
+                            data-gallery="portfolio-gallery-product"
+                            className="glightbox preview-link"
+                          >
+                            <i className="bi bi-zoom-in"></i>
+                          </a>
+                          {/* eslint-disable-next-line jsx-a11y/anchor-is-valid */}
+                          <a
+                            title="More Details"
+                            className="details-link"
+                            data-bs-toggle="modal"
+                            data-bs-target={`#project${project.id}`}
+                          >
+                            <i className="bi bi-link-45deg"></i>
+                          </a>
+                        </div>
+                      </div>
+                    );
+                  default:
+                    break;
+                }
+              })
+            }
           </div>
         </div>
       </div>
-      <Modal />
+      {projects.map((project) => {
+        return <Modal key={project.id} data={project} />;
+      })}
     </section>
   );
 }

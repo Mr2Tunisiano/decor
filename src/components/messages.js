@@ -1,27 +1,17 @@
-import axios from "axios";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import MessageModal from "./messageModal";
+import { useDispatch, useSelector } from "react-redux";
+import { editMsg, fetchMsg } from "../rtk/slices/messageSlice";
 
 function Messages() {
-  const [msg, setMsg] = useState([])
+  const dispatch = useDispatch();
+  const messages = useSelector((state) => state.messages);
   useEffect(() => {
-    axios.get("http://localhost/decor/php/messages.php").then((response) => {
-      const sortedData = response.data.sort((a, b) => b.id - a.id);
-      setMsg(sortedData);
-    })
-  },[])
-  const handleUpdate = (obj) => {
-    axios
-      .put(`http://localhost/decor/php/messages.php`, {
-        id: obj.id
-      })
-      .then((response) => {
-        console.log(response.data)
-      })
-      .catch((error) => {
-        console.error(error);
-      });
-  };
+    dispatch(fetchMsg());
+  }, [dispatch]);
+  function handleUpdate(id) {
+    dispatch(editMsg(id))
+  }
   return (
     <div
       className="tab-pane fade show active mt-5"
@@ -40,7 +30,7 @@ function Messages() {
           </tr>
         </thead>
         <tbody>
-          {msg.map((line) => {
+          {messages.map((line) => {
             if (line.is_read === "1") {
               return (
                 <tr key={line.id}>
@@ -72,7 +62,7 @@ function Messages() {
                   <td>
                     <button
                       onClick={() => {
-                        handleUpdate(line);
+                        handleUpdate(line.id);
                       }}
                       className="btn btn-info"
                       data-bs-toggle="modal"
@@ -90,7 +80,7 @@ function Messages() {
           })}
         </tbody>
       </table>
-      {msg.map((line) => {
+      {messages.map((line) => {
         return <MessageModal msg={line} key={line.id} />;
       })}
     </div>

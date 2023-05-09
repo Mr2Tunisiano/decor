@@ -1,12 +1,13 @@
 import { createAsyncThunk, createSlice } from "@reduxjs/toolkit";
+import axios from "axios";
 
 export const fetchMsg = createAsyncThunk("messageSlice/fetchMsg", async () => {
   const res = await axios.get("http://localhost/decor/php/messages.php");
   return res.data; // this is action.payload
 });
-export const editMsg = createAsyncThunk("messageSlice/editMsg", async (obj) => {
+export const editMsg = createAsyncThunk("messageSlice/editMsg", async (id) => {
   const res = await axios.put(`http://localhost/decor/php/messages.php`, {
-    id: obj.id,
+    id: id,
   });
   return res.data; // this is action.payload
 });
@@ -26,16 +27,16 @@ export const messageSlice = createSlice({
   reducers: {},
   extraReducers: (builder) => {
     builder
-      .addCase(fetchProd.fulfilled, (state, action) => {
-        state = action.payload.sort((a, b) => b.id - a.id);
+      .addCase(fetchMsg.fulfilled, (state, action) => {
+        return action.payload.sort((a, b) => b.id - a.id);
       })
       .addCase(editMsg.fulfilled, (state, action) => {
-        return state;
+        return action.payload.sort((a, b) => b.id - a.id);
       })
       .addCase(deleteMsg.fulfilled, (state, action) => {
-        return state
+        return action.payload.sort((a, b) => b.id - a.id);
       });
   },
 });
 
-export default productSlice.reducer;
+export default messageSlice.reducer;

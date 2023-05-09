@@ -19,8 +19,13 @@ switch ($_SERVER['REQUEST_METHOD']) {
     $subject = mysqli_real_escape_string($conn, $data['subject']);
     $message = mysqli_real_escape_string($conn, $data['message']);
     $result = mysqli_query($conn, "INSERT INTO `box` (`name`, `email`, `subject`, `message`, `is_read`) VALUES ('$name', '$email', '$subject', '$message', '0')");
+    $result1 = mysqli_query($conn, 'SELECT * FROM box');
+    $items = array();
+    while ($row = mysqli_fetch_assoc($result1)) {
+      $items[] = $row;
+    }
     if ($result) {
-      sendResponse(201, array('name' => $name, 'email' => $email, 'subject' => $subject, 'message' => $message));
+      sendResponse(201, $items);
     } else {
       sendResponse(500, array('message' => 'Failed to create item.'));
     }
@@ -30,8 +35,13 @@ switch ($_SERVER['REQUEST_METHOD']) {
     $data = json_decode(file_get_contents('php://input'), true);
     $id = $data['id'];
     $result = mysqli_query($conn, "UPDATE `box` SET is_read='1' WHERE id='$id'");
+    $result1 = mysqli_query($conn, 'SELECT * FROM box');
+    $items = array();
+    while ($row = mysqli_fetch_assoc($result1)) {
+      $items[] = $row;
+    }
     if ($result) {
-      sendResponse(200, array('id' => $id));
+      sendResponse(200, $items);
     } else {
       sendResponse(500, array('message' => 'Failed to update item.'));
     }
@@ -40,11 +50,12 @@ switch ($_SERVER['REQUEST_METHOD']) {
   case 'DELETE':
     $id = $_GET['id'];
     $result = mysqli_query($conn, "DELETE FROM `box` WHERE `box`.`id` = '$id'");
-    if ($result) {
-      sendResponse(
-        200,
-        array('id' => $id)
-      );
+    $result1 = mysqli_query($conn, 'SELECT * FROM box');
+    $items = array();
+    while ($row = mysqli_fetch_assoc($result1)) {
+      $items[] = $row;
+    }
+    if ($result) {sendResponse(200,$items);
     } else {
       sendResponse(500, array('message' => 'Failed to delete item.'));
     }

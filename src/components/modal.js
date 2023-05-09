@@ -1,33 +1,71 @@
-function Modal() {
+function Modal(props) {
+  const project = props.data
+  const images = project.img.split(",");
   return (
     <div
       className="modal fade"
-      id="exampleModal"
+      id={`project${project.id}`}
       tabIndex="-1"
       aria-labelledby="exampleModalLabel"
       aria-hidden="true"
     >
       <div className="modal-dialog modal-xl">
         <div className="modal-content">
-          <div className="modal-header">
-            <button
-              type="button"
-              className="btn-close"
-              data-bs-dismiss="modal"
-              aria-label="Close"
-            ></button>
-          </div>
           <div className="modal-body">
             <section id="portfolio-details" className="portfolio-details">
               <div className="container" data-aos="fade-up">
                 <div className="row gy-4">
                   <div className="col-lg-8">
-                    <div className="slides-1 portfolio-details-slider swiper">
-                      <div className="swiper-wrapper align-items-center">
-                        <div className="swiper-slide">
-                          <img src="assets/img/portfolio/app-1.jpg" alt="" />
-                        </div>
+                    <div
+                      id={`imagesCarousel${project.id}`}
+                      className="carousel slide"
+                    >
+                      <div className="carousel-inner">
+                        {images.map((img, index) => {
+                          return (
+                            <div
+                              key={img}
+                              className={`carousel-item${
+                                index === 0 ? " active" : ""
+                              }`}
+                              style={{ maxHeight: "100%" }}
+                            >
+                              <img
+                                src={require(`../../public/assets/img/Projects/${img}`)}
+                                className="d-block w-100"
+                                alt={`img${index}`}
+                                height={400}
+                              />
+                            </div>
+                          );
+                        })}
                       </div>
+                      <button
+                        className="carousel-control-prev"
+                        type="button"
+                        data-bs-target={`#imagesCarousel${project.id}`}
+                        data-bs-slide="prev"
+                      >
+                        <span
+                          className="carousel-control-prev-icon"
+                          style={{ backgroundColor: "black" }}
+                          aria-hidden="true"
+                        ></span>
+                        <span className="visually-hidden">Previous</span>
+                      </button>
+                      <button
+                        className="carousel-control-next"
+                        type="button"
+                        data-bs-target={`#imagesCarousel${project.id}`}
+                        data-bs-slide="next"
+                      >
+                        <span
+                          className="carousel-control-next-icon"
+                          aria-hidden="true"
+                          style={{ backgroundColor: "black" }}
+                        ></span>
+                        <span className="visually-hidden">Next</span>
+                      </button>
                     </div>
                   </div>
 
@@ -36,26 +74,19 @@ function Modal() {
                       <h3>Project information</h3>
                       <ul>
                         <li>
-                          <strong>Category</strong>: Web design
+                          <strong>Category</strong>: {project.category}
                         </li>
                         <li>
-                          <strong>Client</strong>: ASU Company
+                          <strong>Client</strong>: {project.client}
                         </li>
                         <li>
-                          <strong>Project date</strong>: 01 March, 2020
+                          <strong>Project Location</strong>: {project.location}
                         </li>
                       </ul>
                     </div>
                     <div className="portfolio-description">
-                      <h2>This is an example of portfolio detail</h2>
-                      <p>
-                        Autem ipsum nam porro corporis rerum. Quis eos dolorem
-                        eos itaque inventore commodi labore quia quia.
-                        Exercitationem repudiandae officiis neque suscipit non
-                        officia eaque itaque enim. Voluptatem officia
-                        accusantium nesciunt est omnis tempora consectetur
-                        dignissimos. Sequi nulla at esse enim cum deserunt eius.
-                      </p>
+                      <h2>{project.name}</h2>
+                      <p>{project.description}</p>
                     </div>
                   </div>
                 </div>

@@ -1,16 +1,24 @@
-import axios from "axios";
+import { useDispatch } from "react-redux";
+import { deleteMsg } from "../rtk/slices/messageSlice";
+import withReactContent from "sweetalert2-react-content";
+import Swal from "sweetalert2";
 
 function MessageModal(props) {
+  const mySwal = withReactContent(Swal)
+  const dispatch = useDispatch()
   function HandleDelete(id) {
-      axios
-        .delete(`http://localhost/decor/php/messages.php?id=${id}`)
-        .then((response) => {
-          console.log(response);
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-    
+    mySwal.fire({
+        title: "Are you sure you want to delete this item?",
+        icon: "warning",
+        showCancelButton: true,
+        confirmButtonText: "Yes, do it!",
+        cancelButtonText: "No, cancel",
+      })
+      .then((result) => {
+        if (result.isConfirmed) {
+          dispatch(deleteMsg(id));
+        }
+      });
   }
   return (
     <div
@@ -44,10 +52,15 @@ function MessageModal(props) {
               className="btn btn-secondary"
               data-bs-dismiss="modal"
             >
-              Close
+              <i className="bi bi-x-circle"></i> Close
             </button>
-            <button type="button" className="btn btn-danger" onClick={() => HandleDelete(props.msg.id)}>
-              Delete
+            <button
+              type="button"
+              className="btn btn-danger"
+              data-bs-dismiss="modal"
+              onClick={() => HandleDelete(props.msg.id)}
+            >
+              <i className="bi bi-trash"></i> Delete
             </button>
           </div>
         </div>
