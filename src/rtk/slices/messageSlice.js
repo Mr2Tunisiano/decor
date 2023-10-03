@@ -5,12 +5,14 @@ export const fetchMsg = createAsyncThunk("messageSlice/fetchMsg", async () => {
   const res = await axios.get("http://localhost/decor/php/messages.php");
   return res.data; // this is action.payload
 });
+
 export const editMsg = createAsyncThunk("messageSlice/editMsg", async (id) => {
   const res = await axios.put(`http://localhost/decor/php/messages.php`, {
     id: id,
   });
   return res.data; // this is action.payload
 });
+
 export const deleteMsg = createAsyncThunk(
   "messageSlice/deleteMsg",
   async (id) => {
